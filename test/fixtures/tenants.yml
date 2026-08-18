@@ -1,0 +1,9 @@
+acme:
+  name: Acme Inc
+  plan: starter
+  status: active
+
+globex:
+  name: Globex Corp
+  plan: starter
+  status: active
