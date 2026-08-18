@@ -67,3 +67,14 @@ group :test do
   gem "capybara"
   gem "selenium-webdriver"
 end
+
+group :development, :test do
+  # RSpec is this app's test framework; rswag generates OpenAPI docs from
+  # request specs [https://github.com/rswag/rswag]
+  gem "rspec-rails"
+  gem "rswag-specs"
+end
+
+# Serves the generated OpenAPI JSON and Swagger UI
+gem "rswag-api"
+gem "rswag-ui"

@@ -6,7 +6,7 @@ module Api
     respond_to :json
 
     rescue_from ActiveRecord::RecordInvalid do |exception|
-      render json: { errors: exception.record.errors.full_messages }, status: :unprocessable_entity
+      render json: { errors: exception.record.errors.full_messages }, status: :unprocessable_content
     end
 
     rescue_from ActiveRecord::RecordNotFound do

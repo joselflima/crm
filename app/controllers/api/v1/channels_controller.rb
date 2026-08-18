@@ -9,7 +9,7 @@ module Api
       def create
         type = channel_params[:type]
         errors = validate_channel_params(type)
-        return render json: { errors: errors }, status: :unprocessable_entity if errors.any?
+        return render json: { errors: errors }, status: :unprocessable_content if errors.any?
 
         channel = ActiveRecord::Base.transaction do
           upsert_secret!(type)
