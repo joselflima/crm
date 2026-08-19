@@ -1,6 +1,7 @@
 starter:
+  code: starter
   name: Starter
   max_users: 5
   max_channels: 2
-  monthly_conversation_quota: 500
+  included_conversations: 500
   price_cents: 9900

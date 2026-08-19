@@ -36,12 +36,13 @@ RSpec.configure do |config|
           channel: {
             type: :object,
             properties: {
-              id: { type: :integer },
+              id: { type: :string, format: :uuid },
               type: { type: :string, enum: %w[whatsapp instagram] },
               external_id: { type: :string },
-              status: { type: :string, enum: %w[active inactive] }
+              display_name: { type: :string },
+              status: { type: :string, enum: %w[pending connected error disabled] }
             },
-            required: %w[id type external_id status]
+            required: %w[id type external_id display_name status]
           },
           errors: {
             type: :object,

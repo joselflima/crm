@@ -6,11 +6,14 @@ class Channel < ApplicationRecord
 
   belongs_to :tenant
 
+  # Both columns are PostgreSQL enums (channel_type / channel_status); these
+  # lists have to stay in sync with them.
   TYPES = %w[whatsapp instagram].freeze
-  STATUSES = %w[active inactive].freeze
+  STATUSES = %w[pending connected error disabled].freeze
 
   enum :type, TYPES.index_by(&:itself)
   enum :status, STATUSES.index_by(&:itself)
 
+  validates :display_name, presence: true
   validates :external_id, presence: true, uniqueness: { scope: :type }
 end

@@ -37,7 +37,7 @@ module Api
       end
 
       def channel_params
-        params.require(:channel).permit(:type, :external_id, :access_token, :phone_number_id)
+        params.require(:channel).permit(:type, :external_id, :access_token, :phone_number_id, :display_name)
       end
 
       def upsert_channel!(type)
@@ -45,9 +45,17 @@ module Api
           type: type,
           external_id: channel_params[:external_id]
         )
-        channel.status = :active
+        channel.display_name = channel_params[:display_name].presence ||
+          channel.display_name.presence ||
+          default_display_name(type)
+        # Stays `pending` until the Meta webhook subscription is verified.
+        channel.status = :pending if channel.new_record?
         channel.save!
         channel
+      end
+
+      def default_display_name(type)
+        "#{type.capitalize} #{channel_params[:external_id]}"
       end
 
       def upsert_secret!(type)
@@ -70,6 +78,7 @@ module Api
           id: channel.id,
           type: channel.type,
           external_id: channel.external_id,
+          display_name: channel.display_name,
           status: channel.status
         }
       end

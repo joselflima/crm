@@ -78,3 +78,7 @@ end
 # Serves the generated OpenAPI JSON and Swagger UI
 gem "rswag-api"
 gem "rswag-ui"
+
+gem "solargraph", "~> 0.60.1"
+
+gem "dotenv-rails", "~> 3.2"

@@ -4,5 +4,8 @@ class Tenant < ApplicationRecord
   has_many :channels, dependent: :destroy
   has_one :tenant_secret, dependent: :destroy
 
-  validates :status, inclusion: { in: %w[trial active past_due] }
+  # Mirrors the tenant_status PostgreSQL enum.
+  STATUSES = %w[trial active past_due suspended canceled].freeze
+
+  validates :status, inclusion: { in: STATUSES }
 end

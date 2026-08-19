@@ -1,34 +1,34 @@
 class CreateProfiles < ActiveRecord::Migration[8.1]
+  # Mirrors the real, already-deployed `profiles` table (see CreatePlans for
+  # why these migrations are written defensively). Devise reads
+  # `password_hash` through an alias on the model — the column is not renamed.
   def change
-    create_table :profiles, if_not_exists: true do |t|
-      t.string :email, null: false, default: ""
-      t.string :password_hash, null: false, default: ""
-      t.string :full_name
-      t.string :avatar_url
-      t.string :phone
-      t.boolean :is_active, null: false, default: true
-      t.datetime :last_seen_at
+    create_enum :user_role, %w[super_admin admin agent]
 
-      t.references :tenant, foreign_key: true, index: true
-      t.string :role, null: false, default: "agent"
+    create_table :profiles, id: :uuid, default: -> { "gen_random_uuid()" }, if_not_exists: true do |t|
+      t.text :email, null: false
+      t.text :password_hash
+      t.text :full_name
+      t.text :avatar_url
+      t.text :phone
+      t.boolean :is_active, default: true, null: false
+      t.timestamptz :last_seen_at
+      t.uuid :tenant_id
+      t.enum :role, enum_type: "user_role", default: "agent", null: false
+      t.timestamptz :created_at, default: -> { "now()" }, null: false
+      t.timestamptz :updated_at, default: -> { "now()" }, null: false
 
-      t.timestamps
+      t.index "lower(email)", name: "profiles_email_unique", unique: true
+      t.index [ :email ], name: "index_profiles_on_email", unique: true
+      t.index [ :tenant_id ], name: "index_profiles_on_tenant_id"
+      t.check_constraint "role = 'super_admin'::user_role AND tenant_id IS NULL OR " \
+                         "role <> 'super_admin'::user_role AND tenant_id IS NOT NULL",
+                         name: "profiles_tenant_required"
     end
 
-    # create_table is a no-op when the table already exists (e.g. the
-    # already-loaded production schema), so add exactly whatever columns are
-    # still missing rather than assuming the block above ran.
-    add_column :profiles, :email, :string, null: false, default: "" unless column_exists?(:profiles, :email)
-    add_column :profiles, :password_hash, :string, null: false, default: "" unless column_exists?(:profiles, :password_hash)
-    add_column :profiles, :full_name, :string unless column_exists?(:profiles, :full_name)
-    add_column :profiles, :avatar_url, :string unless column_exists?(:profiles, :avatar_url)
-    add_column :profiles, :phone, :string unless column_exists?(:profiles, :phone)
-    add_column :profiles, :is_active, :boolean, null: false, default: true unless column_exists?(:profiles, :is_active)
-    add_column :profiles, :last_seen_at, :datetime unless column_exists?(:profiles, :last_seen_at)
-    add_reference :profiles, :tenant, foreign_key: true, index: true unless column_exists?(:profiles, :tenant_id)
-    add_column :profiles, :role, :string, null: false, default: "agent" unless column_exists?(:profiles, :role)
-
-    add_index :profiles, :email, unique: true, if_not_exists: true
+    unless foreign_key_exists?(:profiles, :tenants)
+      add_foreign_key :profiles, :tenants, name: "profiles_tenant_id_fkey", on_delete: :cascade
+    end
 
     reversible do |dir|
       dir.up do
