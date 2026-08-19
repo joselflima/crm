@@ -1,0 +1,11 @@
+acme:
+  name: Acme Inc
+  slug: acme
+  plan: starter
+  status: active
+
+globex:
+  name: Globex Corp
+  slug: globex
+  plan: starter
+  status: active

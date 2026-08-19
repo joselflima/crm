@@ -1,0 +1,110 @@
+---
+openapi: 3.0.1
+info:
+  title: CRM API V1
+  version: v1
+  description: Tenant-facing API for the multi-tenant CRM.
+paths:
+  "/api/v1/channels":
+    post:
+      summary: create a WhatsApp or Instagram channel
+      tags:
+      - Channels
+      description: |
+        Inserts (or updates) the current tenant's WhatsApp or Instagram
+        channel and stores the associated API credentials in
+        `tenant_secrets`. The access token is encrypted at rest and never
+        echoed back in the response.
+      security:
+      - profile_session: []
+      parameters: []
+      responses:
+        '201':
+          description: channel created
+          content:
+            application/json:
+              schema:
+                "$ref": "#/components/schemas/channel"
+        '422':
+          description: invalid request
+          content:
+            application/json:
+              schema:
+                "$ref": "#/components/schemas/errors"
+        '403':
+          description: forbidden — not a tenant admin
+        '401':
+          description: unauthenticated
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                channel:
+                  type: object
+                  properties:
+                    type:
+                      type: string
+                      enum:
+                      - whatsapp
+                      - instagram
+                      description: Channel provider
+                    external_id:
+                      type: string
+                      description: phone_number_id (WhatsApp) or Instagram Business
+                        Account ID
+                    access_token:
+                      type: string
+                      description: Meta access token for this channel
+                    phone_number_id:
+                      type: string
+                      description: Required when type is whatsapp
+                  required:
+                  - type
+                  - external_id
+                  - access_token
+              required:
+              - channel
+components:
+  securitySchemes:
+    profile_session:
+      type: apiKey
+      in: cookie
+      name: _crm_session
+      description: Devise session cookie for a signed-in Profile (POST /profiles/sign_in).
+  schemas:
+    channel:
+      type: object
+      properties:
+        id:
+          type: integer
+        type:
+          type: string
+          enum:
+          - whatsapp
+          - instagram
+        external_id:
+          type: string
+        status:
+          type: string
+          enum:
+          - active
+          - inactive
+      required:
+      - id
+      - type
+      - external_id
+      - status
+    errors:
+      type: object
+      properties:
+        errors:
+          type: array
+          items:
+            type: string
+servers:
+- url: https://{defaultHost}
+  variables:
+    defaultHost:
+      default: www.example.com

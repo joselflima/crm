@@ -16,6 +16,16 @@ module Crm
     # Common ones are `templates`, `generators`, or `middleware`, for example.
     config.autoload_lib(ignore: %w[assets tasks])
 
+    # The database carries triggers (trg_*_updated_at) and functions
+    # (set_updated_at, transfer_to_human) that schema.rb cannot express, so it
+    # silently dropped them from the test database. Dump SQL instead.
+    config.active_record.schema_format = :sql
+
+    # RSpec is this app's test framework (see spec/, rswag request specs).
+    config.generators do |g|
+      g.test_framework :rspec, fixtures: true, request_specs: true
+    end
+
     # Configuration for the application, engines, and railties goes here.
     #
     # These settings can be overridden in specific environments using the files

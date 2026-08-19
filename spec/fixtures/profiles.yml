@@ -1,0 +1,17 @@
+acme_admin:
+  email: admin@acme.example
+  password_hash: <%= BCrypt::Password.create("password12345") %>
+  tenant: acme
+  role: admin
+
+acme_agent:
+  email: agent@acme.example
+  password_hash: <%= BCrypt::Password.create("password12345") %>
+  tenant: acme
+  role: agent
+
+globex_admin:
+  email: admin@globex.example
+  password_hash: <%= BCrypt::Password.create("password12345") %>
+  tenant: globex
+  role: admin

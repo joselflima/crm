@@ -4,8 +4,8 @@ source "https://rubygems.org"
 gem "rails", "~> 8.1.3", ">= 8.1.3.1"
 # The modern asset pipeline for Rails [https://github.com/rails/propshaft]
 gem "propshaft"
-# Use sqlite3 as the database for Active Record
-gem "sqlite3", ">= 2.1"
+# Use PostgreSQL as the database for Active Record
+gem "pg", "~> 1.5"
 # Use the Puma web server [https://github.com/puma/puma]
 gem "puma", ">= 5.0"
 # Use JavaScript with ESM import maps [https://github.com/rails/importmap-rails]
@@ -18,7 +18,10 @@ gem "stimulus-rails"
 gem "jbuilder"
 
 # Use Active Model has_secure_password [https://guides.rubyonrails.org/active_model_basics.html#securepassword]
-# gem "bcrypt", "~> 3.1.7"
+gem "bcrypt", "~> 3.1.7"
+
+# Flexible authentication solution for Rails [https://github.com/heartcombo/devise]
+gem "devise"
 
 # Windows does not include zoneinfo files, so bundle the tzinfo-data gem
 gem "tzinfo-data", platforms: %i[ windows jruby ]
@@ -64,3 +67,18 @@ group :test do
   gem "capybara"
   gem "selenium-webdriver"
 end
+
+group :development, :test do
+  # RSpec is this app's test framework; rswag generates OpenAPI docs from
+  # request specs [https://github.com/rswag/rswag]
+  gem "rspec-rails"
+  gem "rswag-specs"
+end
+
+# Serves the generated OpenAPI JSON and Swagger UI
+gem "rswag-api"
+gem "rswag-ui"
+
+gem "solargraph", "~> 0.60.1"
+
+gem "dotenv-rails", "~> 3.2"
