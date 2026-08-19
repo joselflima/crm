@@ -33,3 +33,7 @@
 # Ignore key files for decrypting credentials and more.
 /config/*.key
 
+
+# Rails ignores schema.rb when schema_format is :sql; db/structure.sql is
+# the schema of record.
+/db/schema.rb
