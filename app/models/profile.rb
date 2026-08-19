@@ -1,7 +1,22 @@
 class Profile < ApplicationRecord
-  devise :database_authenticatable, :recoverable, :rememberable, :trackable, :validatable
+  # Only :recoverable/:rememberable/:trackable would need columns
+  # (reset_password_token, remember_created_at, sign_in_count, ...) that
+  # don't exist on the real profiles table, so they're intentionally
+  # omitted rather than added to a shared production schema.
+  devise :database_authenticatable, :validatable
 
   belongs_to :tenant, optional: true
+
+  # Devise's database_authenticatable expects an `encrypted_password`
+  # column; the real table calls it `password_hash`. Alias rather than
+  # rename the column.
+  def encrypted_password
+    password_hash
+  end
+
+  def encrypted_password=(value)
+    self.password_hash = value
+  end
 
   ROLES = %w[agent admin super_admin].freeze
   enum :role, ROLES.index_by(&:itself)

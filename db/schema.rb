@@ -37,22 +37,18 @@ ActiveRecord::Schema[8.1].define(version: 2026_08_18_214505) do
   end
 
   create_table "profiles", force: :cascade do |t|
+    t.string "avatar_url"
     t.datetime "created_at", null: false
-    t.datetime "current_sign_in_at"
-    t.string "current_sign_in_ip"
     t.string "email", default: "", null: false
-    t.string "encrypted_password", default: "", null: false
-    t.datetime "last_sign_in_at"
-    t.string "last_sign_in_ip"
-    t.datetime "remember_created_at"
-    t.datetime "reset_password_sent_at"
-    t.string "reset_password_token"
+    t.string "full_name"
+    t.boolean "is_active", default: true, null: false
+    t.datetime "last_seen_at"
+    t.string "password_hash", default: "", null: false
+    t.string "phone"
     t.string "role", default: "agent", null: false
-    t.integer "sign_in_count", default: 0, null: false
     t.bigint "tenant_id"
     t.datetime "updated_at", null: false
     t.index ["email"], name: "index_profiles_on_email", unique: true
-    t.index ["reset_password_token"], name: "index_profiles_on_reset_password_token", unique: true
     t.index ["tenant_id"], name: "index_profiles_on_tenant_id"
     t.check_constraint "role::text = 'super_admin'::text AND tenant_id IS NULL OR role::text <> 'super_admin'::text AND tenant_id IS NOT NULL", name: "profiles_super_admin_tenant_check"
   end
