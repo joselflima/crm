@@ -9,6 +9,13 @@
 
 # Ignore all environment files.
 /.env*
+!/.env.example
+
+# Python virtual environments are local runtime artifacts.
+/.venv/
+/backend/.venv/
+__pycache__/
+*.py[cod]
 
 # Ignore all logfiles and tempfiles.
 /log/*
