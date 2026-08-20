@@ -1,0 +1,2 @@
+"""Cyrus CRM FastAPI application."""
+
